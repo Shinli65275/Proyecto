@@ -11,10 +11,6 @@ class LibroForm(forms.ModelForm):
             'precio_adquisicion', 'descripcion', 'portada'
         ]
         widgets = {
-            'isbn': forms.TextInput(attrs={
-                'class': 'form-control',
-                'placeholder': 'ISBN de 13 dígitos'
-            }),
             'titulo': forms.TextInput(attrs={
                 'class': 'form-control',
                 'placeholder': 'Título del libro'
@@ -51,10 +47,6 @@ class LibroForm(forms.ModelForm):
             'idioma': forms.TextInput(attrs={
                 'class': 'form-control',
                 'placeholder': 'Idioma'
-            }),
-            'ubicacion': forms.TextInput(attrs={
-                'class': 'form-control',
-                'placeholder': 'Ejemplo: Estante A, Nivel 2'
             }),
             'codigo_inventario': forms.TextInput(attrs={
                 'class': 'form-control',

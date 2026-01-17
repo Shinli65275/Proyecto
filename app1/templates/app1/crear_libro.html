@@ -32,16 +32,6 @@
                             </h5>
                         </div>
                         
-                        <div class="col-md-4 mb-3">
-                            <label for="{{ form.isbn.id_for_label }}" class="form-label">
-                                {{ form.isbn.label }}
-                            </label>
-                            {{ form.isbn }}
-                            {% if form.isbn.errors %}
-                                <div class="text-danger small mt-1">{{ form.isbn.errors }}</div>
-                            {% endif %}
-                            <small class="text-muted">Opcional, 13 dígitos</small>
-                        </div>
                         
                         <div class="col-md-8 mb-3">
                             <label for="{{ form.titulo.id_for_label }}" class="form-label">
@@ -179,16 +169,6 @@
                                 <div class="text-danger small mt-1">{{ form.codigo_inventario.errors }}</div>
                             {% endif %}
                             <small class="text-muted">Debe ser único</small>
-                        </div>
-                        
-                        <div class="col-md-6 mb-3">
-                            <label for="{{ form.ubicacion.id_for_label }}" class="form-label">
-                                {{ form.ubicacion.label }} <span class="text-danger">*</span>
-                            </label>
-                            {{ form.ubicacion }}
-                            {% if form.ubicacion.errors %}
-                                <div class="text-danger small mt-1">{{ form.ubicacion.errors }}</div>
-                            {% endif %}
                         </div>
                         
                         <div class="col-md-6 mb-3">

@@ -1,0 +1,114 @@
+{% extends 'app1/base.html' %}
+
+{% block title %}Renovar Préstamo - Biblioteca Cecytem{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8 mx-auto">
+        <div class="card shadow-sm border-info">
+            <div class="card-header bg-info text-white">
+                <h4 class="mb-0">
+                    <i class="bi bi-arrow-clockwise"></i> Renovar Préstamo
+                </h4>
+            </div>
+            <div class="card-body p-4">
+                
+                <div class="alert alert-info" role="alert">
+                    <i class="bi bi-info-circle"></i>
+                    La renovación extenderá el préstamo por {{ config.dias_prestamo }} días adicionales.
+                </div>
+
+                <!-- Información del préstamo -->
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <h5>Información del Préstamo</h5>
+                        <table class="table table-sm">
+                            <tr>
+                                <th width="40%">Folio:</th>
+                                <td><strong>#{{ prestamo.id }}</strong></td>
+                            </tr>
+                            <tr>
+                                <th>Libro:</th>
+                                <td><strong>{{ prestamo.libro.titulo }}</strong></td>
+                            </tr>
+                            <tr>
+                                <th>Autor:</th>
+                                <td>{{ prestamo.libro.autor }}</td>
+                            </tr>
+                            <tr>
+                                <th>Alumno:</th>
+                                <td><strong>{{ prestamo.alumno_nombre }}</strong></td>
+                            </tr>
+                            <tr>
+                                <th>Matrícula:</th>
+                                <td>{{ prestamo.alumno_matricula }}</td>
+                            </tr>
+                            <tr>
+                                <th>Fecha de préstamo:</th>
+                                <td>{{ prestamo.fecha_prestamo|date:"d/m/Y" }}</td>
+                            </tr>
+                            <tr>
+                                <th>Vencimiento actual:</th>
+                                <td>{{ prestamo.fecha_vencimiento|date:"d/m/Y" }}</td>
+                            </tr>
+                            <tr class="table-info">
+                                <th>Nuevo vencimiento:</th>
+                                <td>
+                                    <strong>{{ prestamo.fecha_vencimiento|date:"d/m/Y" }} + {{ config.dias_prestamo }} días</strong>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Renovaciones realizadas:</th>
+                                <td>
+                                    <span class="badge bg-secondary">{{ prestamo.renovaciones }}</span> de 
+                                    <span class="badge bg-info">{{ config.max_renovaciones }}</span>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Condiciones -->
+                <div class="card bg-light mb-4">
+                    <div class="card-body">
+                        <h6><i class="bi bi-check-circle"></i> Condiciones para renovar:</h6>
+                        <ul class="mb-0">
+                            <li>El préstamo debe estar activo</li>
+                            <li>No debe tener multas pendientes</li>
+                            <li>No debe exceder el máximo de {{ config.max_renovaciones }} renovaciones</li>
+                            <li>El libro debe seguir estando en buenas condiciones</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Formulario -->
+                <form method="post">
+                    {% csrf_token %}
+                    
+                    <hr class="my-4">
+                    
+                    <div class="d-flex justify-content-between">
+                        <a href="{% url 'lista_prestamos' %}" class="btn btn-secondary">
+                            <i class="bi bi-arrow-left"></i> Cancelar
+                        </a>
+                        <button type="submit" class="btn btn-info btn-lg">
+                            <i class="bi bi-arrow-clockwise"></i> Confirmar Renovación
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Confirmación
+    document.querySelector('form').addEventListener('submit', function(e) {
+        if (!confirm('¿Confirmas la renovación de este préstamo?')) {
+            e.preventDefault();
+        }
+    });
+</script>
+{% endblock %}
