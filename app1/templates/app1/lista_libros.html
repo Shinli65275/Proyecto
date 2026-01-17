@@ -29,7 +29,7 @@
                                    id="busqueda" 
                                    name="q" 
                                    value="{{ query }}"
-                                   placeholder="Título, autor, ISBN, código...">
+                                   placeholder="Título, autor, código...">
                         </div>
                     </div>
                     <div class="col-md-3">
@@ -83,7 +83,6 @@
                                     <th>Código</th>
                                     <th>Título / Autor</th>
                                     <th>Categoría</th>
-                                    <th>Ubicación</th>
                                     <th>Estado</th>
                                     <th class="text-center">Acciones</th>
                                 </tr>
@@ -114,9 +113,6 @@
                                     </td>
                                     <td>
                                         <span class="badge bg-secondary">{{ libro.get_categoria_display }}</span>
-                                    </td>
-                                    <td>
-                                        <small><i class="bi bi-geo-alt"></i> {{ libro.ubicacion }}</small>
                                     </td>
                                     <td>
                                         {% if libro.disponible %}

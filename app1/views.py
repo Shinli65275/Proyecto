@@ -67,7 +67,6 @@ def lista_libros(request):
         libros = libros.filter(
             Q(titulo__icontains=query) |
             Q(autor__icontains=query) |
-            Q(isbn__icontains=query) |
             Q(codigo_inventario__icontains=query)
         )
     
