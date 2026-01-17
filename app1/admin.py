@@ -3,15 +3,15 @@ from .models import Libro, Prestamo, Multa, HistorialMovimiento, ConfiguracionSi
 
 @admin.register(Libro)
 class LibroAdmin(admin.ModelAdmin):
-    list_display = ['titulo', 'autor', 'codigo_inventario', 'categoria', 'disponible', 'ubicacion']
+    list_display = ['titulo', 'autor', 'codigo_inventario', 'categoria', 'disponible']
     list_filter = ['categoria', 'disponible', 'condicion', 'idioma']
-    search_fields = ['titulo', 'autor', 'isbn', 'codigo_inventario']
+    search_fields = ['titulo', 'autor', 'codigo_inventario']
     list_per_page = 20
     ordering = ['-creado_en']
     
     fieldsets = (
         ('Información Básica', {
-            'fields': ('isbn', 'titulo', 'subtitulo', 'autor', 'editorial')
+            'fields': ('titulo', 'subtitulo', 'autor', 'editorial')
         }),
         ('Detalles de Publicación', {
             'fields': ('publicacion', 'edicion', 'num_paginas', 'idioma')
@@ -20,7 +20,7 @@ class LibroAdmin(admin.ModelAdmin):
             'fields': ('categoria', 'condicion')
         }),
         ('Inventario', {
-            'fields': ('codigo_inventario', 'ubicacion', 'precio_adquisicion', 'disponible')
+            'fields': ('codigo_inventario', 'precio_adquisicion', 'disponible')
         }),
         ('Información Adicional', {
             'fields': ('descripcion', 'portada'),

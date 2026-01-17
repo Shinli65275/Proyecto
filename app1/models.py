@@ -25,7 +25,6 @@ class Libro(models.Model):
         ('malo', 'Malo'),
     ]
     
-    isbn = models.CharField(max_length=13, unique=True, blank=True, null=True)
     titulo = models.CharField(max_length=300)
     subtitulo = models.CharField(max_length=300, blank=True, null=True)
     autor = models.CharField(max_length=200)
@@ -37,7 +36,6 @@ class Libro(models.Model):
     num_paginas = models.IntegerField(blank=True, null=True)
     idioma = models.CharField(max_length=50, default='Español')
     
-    ubicacion = models.CharField(max_length=100, help_text="Ej: Estante A, Nivel 2")
     codigo_inventario = models.CharField(max_length=50, unique=True)
     condicion = models.CharField(max_length=20, choices=CONDICIONES, default='bueno')
     

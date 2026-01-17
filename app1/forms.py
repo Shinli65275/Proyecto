@@ -5,9 +5,9 @@ class LibroForm(forms.ModelForm):
     class Meta:
         model = Libro
         fields = [
-            'isbn', 'titulo', 'subtitulo', 'autor', 'editorial', 
+            'titulo', 'subtitulo', 'autor', 'editorial', 
             'publicacion', 'edicion', 'categoria', 'num_paginas', 
-            'idioma', 'ubicacion', 'codigo_inventario', 'condicion',
+            'idioma', 'codigo_inventario', 'condicion',
             'precio_adquisicion', 'descripcion', 'portada'
         ]
         widgets = {
@@ -71,7 +71,6 @@ class LibroForm(forms.ModelForm):
             }),
         }
         labels = {
-            'isbn': 'ISBN',
             'titulo': 'Título',
             'subtitulo': 'Subtítulo',
             'autor': 'Autor',
@@ -81,7 +80,6 @@ class LibroForm(forms.ModelForm):
             'categoria': 'Categoría',
             'num_paginas': 'Número de Páginas',
             'idioma': 'Idioma',
-            'ubicacion': 'Ubicación en Biblioteca',
             'codigo_inventario': 'Código de Inventario',
             'condicion': 'Condición',
             'precio_adquisicion': 'Precio de Adquisición',
