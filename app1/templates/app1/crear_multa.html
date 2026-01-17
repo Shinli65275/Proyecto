@@ -1,0 +1,141 @@
+{% extends 'app1/base.html' %}
+
+{% block title %}Nueva Multa - Biblioteca Cecytem{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-8 mx-auto">
+        <div class="card shadow-sm border-warning">
+            <div class="card-header bg-warning">
+                <h4 class="mb-0">
+                    <i class="bi bi-plus-circle"></i> Nueva Multa
+                </h4>
+            </div>
+            <div class="card-body p-4">
+                
+                <div class="alert alert-info" role="alert">
+                    <i class="bi bi-info-circle"></i>
+                    Usa este formulario para registrar multas manualmente por daños, pérdidas u otros conceptos.
+                    Las multas por retraso se generan automáticamente al devolver libros.
+                </div>
+
+                <form method="post">
+                    {% csrf_token %}
+                    
+                    <!-- Préstamo y Libro (opcionales) -->
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <h5 class="border-bottom pb-2 mb-3">
+                                <i class="bi bi-link text-primary"></i> Relacionar con Préstamo/Libro (Opcional)
+                            </h5>
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.prestamo.id_for_label }}" class="form-label">
+                                {{ form.prestamo.label }}
+                            </label>
+                            {{ form.prestamo }}
+                            {% if form.prestamo.errors %}
+                                <div class="text-danger small mt-1">{{ form.prestamo.errors }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.libro.id_for_label }}" class="form-label">
+                                {{ form.libro.label }}
+                            </label>
+                            {{ form.libro }}
+                            {% if form.libro.errors %}
+                                <div class="text-danger small mt-1">{{ form.libro.errors }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Información del alumno -->
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <h5 class="border-bottom pb-2 mb-3">
+                                <i class="bi bi-person text-primary"></i> Información del Alumno
+                            </h5>
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.alumno_nombre.id_for_label }}" class="form-label">
+                                {{ form.alumno_nombre.label }} <span class="text-danger">*</span>
+                            </label>
+                            {{ form.alumno_nombre }}
+                            {% if form.alumno_nombre.errors %}
+                                <div class="text-danger small mt-1">{{ form.alumno_nombre.errors }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.alumno_matricula.id_for_label }}" class="form-label">
+                                {{ form.alumno_matricula.label }} <span class="text-danger">*</span>
+                            </label>
+                            {{ form.alumno_matricula }}
+                            {% if form.alumno_matricula.errors %}
+                                <div class="text-danger small mt-1">{{ form.alumno_matricula.errors }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Tipo y monto -->
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <h5 class="border-bottom pb-2 mb-3">
+                                <i class="bi bi-cash-coin text-primary"></i> Detalles de la Multa
+                            </h5>
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.tipo.id_for_label }}" class="form-label">
+                                {{ form.tipo.label }} <span class="text-danger">*</span>
+                            </label>
+                            {{ form.tipo }}
+                            {% if form.tipo.errors %}
+                                <div class="text-danger small mt-1">{{ form.tipo.errors }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.monto.id_for_label }}" class="form-label">
+                                {{ form.monto.label }} <span class="text-danger">*</span>
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text">$</span>
+                                {{ form.monto }}
+                            </div>
+                            {% if form.monto.errors %}
+                                <div class="text-danger small mt-1">{{ form.monto.errors }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="col-md-12 mb-3">
+                            <label for="{{ form.descripcion.id_for_label }}" class="form-label">
+                                {{ form.descripcion.label }} <span class="text-danger">*</span>
+                            </label>
+                            {{ form.descripcion }}
+                            {% if form.descripcion.errors %}
+                                <div class="text-danger small mt-1">{{ form.descripcion.errors }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Botones -->
+                    <hr class="my-4">
+                    
+                    <div class="d-flex justify-content-between">
+                        <a href="{% url 'lista_multas' %}" class="btn btn-secondary">
+                            <i class="bi bi-x-circle"></i> Cancelar
+                        </a>
+                        <button type="submit" class="btn btn-warning btn-lg">
+                            <i class="bi bi-save"></i> Registrar Multa
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

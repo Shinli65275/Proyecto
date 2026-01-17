@@ -1,0 +1,169 @@
+{% extends 'app1/base.html' %}
+
+{% block title %}Libros Disponibles - Biblioteca Cecytem{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <h2>
+                    <i class="bi bi-check-circle text-success"></i> Libros Disponibles
+                </h2>
+                <p class="text-muted mb-0">Estos libros están disponibles para préstamo</p>
+            </div>
+            <a href="{% url 'crear_libro' %}" class="btn btn-primary">
+                <i class="bi bi-plus-circle"></i> Agregar Libro
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Búsqueda y filtros -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card shadow-sm border-success">
+            <div class="card-body">
+                <form method="get" class="row g-3">
+                    <div class="col-md-6">
+                        <label for="busqueda" class="form-label">Buscar</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="bi bi-search"></i></span>
+                            <input type="text" 
+                                   class="form-control" 
+                                   id="busqueda" 
+                                   name="q" 
+                                   value="{{ query }}"
+                                   placeholder="Título, autor, ISBN, código...">
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <label for="categoria" class="form-label">Categoría</label>
+                        <select class="form-select" id="categoria" name="categoria">
+                            <option value="">Todas las categorías</option>
+                            {% for value, label in categorias %}
+                                <option value="{{ value }}" {% if categoria_seleccionada == value %}selected{% endif %}>
+                                    {{ label }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label d-block">&nbsp;</label>
+                        <button type="submit" class="btn btn-success w-100">
+                            <i class="bi bi-search"></i> Buscar
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Resultados -->
+<div class="row">
+    <div class="col-12">
+        <div class="card shadow-sm">
+            <div class="card-header bg-success text-white">
+                <h5 class="mb-0">
+                    <i class="bi bi-list-ul"></i> 
+                    {{ libros.count }} libro{{ libros.count|pluralize }} disponible{{ libros.count|pluralize }}
+                </h5>
+            </div>
+            <div class="card-body p-0">
+                {% if libros %}
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead class="table-success">
+                                <tr>
+                                    <th>Portada</th>
+                                    <th>Código</th>
+                                    <th>Título / Autor</th>
+                                    <th>Categoría</th>
+                                    <th>Ubicación</th>
+                                    <th>Condición</th>
+                                    <th class="text-center">Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for libro in libros %}
+                                <tr>
+                                    <td>
+                                        {% if libro.portada %}
+                                            <img src="{{ libro.portada.url }}" 
+                                                 alt="{{ libro.titulo }}" 
+                                                 style="width: 50px; height: 70px; object-fit: cover; border-radius: 5px;">
+                                        {% else %}
+                                            <div style="width: 50px; height: 70px; background-color: #e9ecef; border-radius: 5px; display: flex; align-items: center; justify-content: center;">
+                                                <i class="bi bi-book text-muted"></i>
+                                            </div>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <small class="text-muted">{{ libro.codigo_inventario }}</small>
+                                    </td>
+                                    <td>
+                                        <strong>{{ libro.titulo }}</strong>
+                                        {% if libro.subtitulo %}
+                                            <br><small class="text-muted">{{ libro.subtitulo }}</small>
+                                        {% endif %}
+                                        <br><small><i class="bi bi-person"></i> {{ libro.autor }}</small>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-secondary">{{ libro.get_categoria_display }}</span>
+                                    </td>
+                                    <td>
+                                        <small><i class="bi bi-geo-alt"></i> {{ libro.ubicacion }}</small>
+                                    </td>
+                                    <td>
+                                        {% if libro.condicion == 'excelente' %}
+                                            <span class="badge bg-success">{{ libro.get_condicion_display }}</span>
+                                        {% elif libro.condicion == 'bueno' %}
+                                            <span class="badge bg-info">{{ libro.get_condicion_display }}</span>
+                                        {% elif libro.condicion == 'regular' %}
+                                            <span class="badge bg-warning">{{ libro.get_condicion_display }}</span>
+                                        {% else %}
+                                            <span class="badge bg-danger">{{ libro.get_condicion_display }}</span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="text-center">
+                                        <div class="btn-group" role="group">
+                                            <a href="{% url 'crear_prestamo' %}?libro={{ libro.pk }}" 
+                                               class="btn btn-sm btn-success"
+                                               title="Prestar">
+                                                <i class="bi bi-arrow-right-circle"></i>
+                                            </a>
+                                            <a href="{% url 'editar_libro' libro.pk %}" 
+                                               class="btn btn-sm btn-outline-primary"
+                                               title="Editar">
+                                                <i class="bi bi-pencil"></i>
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <div class="text-center py-5">
+                        <i class="bi bi-inbox" style="font-size: 4rem; color: #dee2e6;"></i>
+                        <p class="text-muted mt-3 mb-1">No hay libros disponibles.</p>
+                        <small class="text-muted">Todos los libros están prestados o no hay libros en el catálogo.</small>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Estadística rápida -->
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="alert alert-success" role="alert">
+            <i class="bi bi-info-circle"></i>
+            <strong>Disponibles:</strong> {{ libros.count }} de un total registrado en el sistema.
+        </div>
+    </div>
+</div>
+{% endblock %}

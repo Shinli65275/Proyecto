@@ -1,0 +1,146 @@
+{% extends 'app1/base.html' %}
+
+{% block title %}Devolver Libro - Biblioteca Cecytem{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-10 mx-auto">
+        <div class="card shadow-sm {% if dias_retraso > 0 %}border-danger{% else %}border-success{% endif %}">
+            <div class="card-header {% if dias_retraso > 0 %}bg-danger{% else %}bg-success{% endif %} text-white">
+                <h4 class="mb-0">
+                    <i class="bi bi-arrow-left-circle"></i> Devolver Libro
+                </h4>
+            </div>
+            <div class="card-body p-4">
+                
+                <!-- Alerta de retraso -->
+                {% if dias_retraso > 0 %}
+                <div class="alert alert-danger" role="alert">
+                    <i class="bi bi-exclamation-triangle-fill"></i>
+                    <strong>¡Préstamo Vencido!</strong> Este libro tiene un retraso de <strong>{{ dias_retraso }} día{{ dias_retraso|pluralize }}</strong>.
+                    Se generará una multa automáticamente.
+                </div>
+                {% else %}
+                <div class="alert alert-success" role="alert">
+                    <i class="bi bi-check-circle-fill"></i>
+                    Este libro se está devolviendo a tiempo. No se generarán multas.
+                </div>
+                {% endif %}
+
+                <!-- Información del préstamo -->
+                <div class="row mb-4">
+                    <div class="col-md-8">
+                        <h5>Información del Préstamo</h5>
+                        <table class="table table-sm">
+                            <tr>
+                                <th width="40%">Folio:</th>
+                                <td><strong>#{{ prestamo.id }}</strong></td>
+                            </tr>
+                            <tr>
+                                <th>Libro:</th>
+                                <td><strong>{{ prestamo.libro.titulo }}</strong></td>
+                            </tr>
+                            <tr>
+                                <th>Autor:</th>
+                                <td>{{ prestamo.libro.autor }}</td>
+                            </tr>
+                            <tr>
+                                <th>Código:</th>
+                                <td><code>{{ prestamo.libro.codigo_inventario }}</code></td>
+                            </tr>
+                            <tr>
+                                <th>Alumno:</th>
+                                <td><strong>{{ prestamo.alumno_nombre }}</strong></td>
+                            </tr>
+                            <tr>
+                                <th>Matrícula:</th>
+                                <td>{{ prestamo.alumno_matricula }}</td>
+                            </tr>
+                            {% if prestamo.alumno_grado and prestamo.alumno_grupo %}
+                            <tr>
+                                <th>Grado/Grupo:</th>
+                                <td>{{ prestamo.alumno_grado }} - {{ prestamo.alumno_grupo }}</td>
+                            </tr>
+                            {% endif %}
+                        </table>
+                    </div>
+                    <div class="col-md-4">
+                        <h5>Fechas</h5>
+                        <div class="mb-3">
+                            <strong>Préstamo:</strong><br>
+                            {{ prestamo.fecha_prestamo|date:"d/m/Y" }}
+                        </div>
+                        <div class="mb-3">
+                            <strong>Vencimiento:</strong><br>
+                            {{ prestamo.fecha_vencimiento|date:"d/m/Y" }}
+                            {% if dias_retraso > 0 %}
+                                <br><span class="badge bg-danger mt-1">VENCIDO</span>
+                            {% endif %}
+                        </div>
+                        {% if prestamo.renovaciones > 0 %}
+                        <div class="mb-3">
+                            <strong>Renovaciones:</strong><br>
+                            <span class="badge bg-info">{{ prestamo.renovaciones }}x</span>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                {% if prestamo.notas_prestamo %}
+                <div class="alert alert-info mb-4" role="alert">
+                    <strong>Notas del préstamo:</strong> {{ prestamo.notas_prestamo }}
+                </div>
+                {% endif %}
+
+                <!-- Formulario de devolución -->
+                <form method="post">
+                    {% csrf_token %}
+                    
+                    <div class="mb-4">
+                        <label for="{{ form.notas_devolucion.id_for_label }}" class="form-label">
+                            <i class="bi bi-pencil-square"></i> {{ form.notas_devolucion.label }}
+                        </label>
+                        {{ form.notas_devolucion }}
+                        {% if form.notas_devolucion.errors %}
+                            <div class="text-danger small mt-1">{{ form.notas_devolucion.errors }}</div>
+                        {% endif %}
+                        <small class="text-muted">Indica el estado del libro o cualquier observación</small>
+                    </div>
+
+                    {% if dias_retraso > 0 %}
+                    <div class="alert alert-warning" role="alert">
+                        <h6><i class="bi bi-calculator"></i> Cálculo de Multa</h6>
+                        <p class="mb-1">Días de retraso: <strong>{{ dias_retraso }}</strong></p>
+                        <p class="mb-1">Multa por día: <strong>$5.00</strong></p>
+                        <hr>
+                        <p class="mb-0">Total a pagar: <strong class="text-danger">${{ dias_retraso|mul:5|floatformat:2 }}</strong></p>
+                    </div>
+                    {% endif %}
+
+                    <hr class="my-4">
+                    
+                    <div class="d-flex justify-content-between">
+                        <a href="{% url 'lista_prestamos' %}" class="btn btn-secondary">
+                            <i class="bi bi-arrow-left"></i> Cancelar
+                        </a>
+                        <button type="submit" class="btn {% if dias_retraso > 0 %}btn-danger{% else %}btn-success{% endif %} btn-lg">
+                            <i class="bi bi-check-circle"></i> Confirmar Devolución
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Confirmación
+    document.querySelector('form').addEventListener('submit', function(e) {
+        if (!confirm('¿Confirmas la devolución de este libro?')) {
+            e.preventDefault();
+        }
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,193 @@
+{% extends 'app1/base.html' %}
+
+{% block title %}Nuevo Préstamo - Biblioteca Cecytem{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2>
+                <i class="bi bi-plus-circle text-success"></i> 
+                Nuevo Préstamo
+            </h2>
+            <a href="{% url 'lista_prestamos' %}" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left"></i> Volver a la lista
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Información rápida -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="alert alert-info" role="alert">
+            <i class="bi bi-info-circle"></i>
+            <strong>Libros disponibles:</strong> {{ libros_disponibles }}
+            | <strong>Duración estándar:</strong> 15 días
+            | <strong>Renovaciones permitidas:</strong> 2
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-10 mx-auto">
+        <div class="card shadow-sm">
+            <div class="card-body p-4">
+                <form method="post" id="formPrestamo">
+                    {% csrf_token %}
+                    
+                    <!-- Selección de libro -->
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <h5 class="border-bottom pb-2 mb-3">
+                                <i class="bi bi-book text-primary"></i> Libro a Prestar
+                            </h5>
+                        </div>
+                        
+                        <div class="col-md-12 mb-3">
+                            <label for="{{ form.libro.id_for_label }}" class="form-label">
+                                {{ form.libro.label }} <span class="text-danger">*</span>
+                            </label>
+                            {{ form.libro }}
+                            {% if form.libro.errors %}
+                                <div class="text-danger small mt-1">{{ form.libro.errors }}</div>
+                            {% endif %}
+                            <small class="text-muted">Solo se muestran libros disponibles</small>
+                        </div>
+                    </div>
+
+                    <!-- Información del alumno -->
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <h5 class="border-bottom pb-2 mb-3">
+                                <i class="bi bi-person text-primary"></i> Información del Alumno
+                            </h5>
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.alumno_nombre.id_for_label }}" class="form-label">
+                                {{ form.alumno_nombre.label }} <span class="text-danger">*</span>
+                            </label>
+                            {{ form.alumno_nombre }}
+                            {% if form.alumno_nombre.errors %}
+                                <div class="text-danger small mt-1">{{ form.alumno_nombre.errors }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.alumno_matricula.id_for_label }}" class="form-label">
+                                {{ form.alumno_matricula.label }} <span class="text-danger">*</span>
+                            </label>
+                            {{ form.alumno_matricula }}
+                            {% if form.alumno_matricula.errors %}
+                                <div class="text-danger small mt-1">{{ form.alumno_matricula.errors }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="col-md-4 mb-3">
+                            <label for="{{ form.alumno_grado.id_for_label }}" class="form-label">
+                                {{ form.alumno_grado.label }}
+                            </label>
+                            {{ form.alumno_grado }}
+                            {% if form.alumno_grado.errors %}
+                                <div class="text-danger small mt-1">{{ form.alumno_grado.errors }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="col-md-4 mb-3">
+                            <label for="{{ form.alumno_grupo.id_for_label }}" class="form-label">
+                                {{ form.alumno_grupo.label }}
+                            </label>
+                            {{ form.alumno_grupo }}
+                            {% if form.alumno_grupo.errors %}
+                                <div class="text-danger small mt-1">{{ form.alumno_grupo.errors }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="col-md-4 mb-3">
+                            <label for="{{ form.alumno_telefono.id_for_label }}" class="form-label">
+                                {{ form.alumno_telefono.label }}
+                            </label>
+                            {{ form.alumno_telefono }}
+                            {% if form.alumno_telefono.errors %}
+                                <div class="text-danger small mt-1">{{ form.alumno_telefono.errors }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Fechas -->
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <h5 class="border-bottom pb-2 mb-3">
+                                <i class="bi bi-calendar text-primary"></i> Fechas del Préstamo
+                            </h5>
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.fecha_vencimiento.id_for_label }}" class="form-label">
+                                {{ form.fecha_vencimiento.label }} <span class="text-danger">*</span>
+                            </label>
+                            {{ form.fecha_vencimiento }}
+                            {% if form.fecha_vencimiento.errors %}
+                                <div class="text-danger small mt-1">{{ form.fecha_vencimiento.errors }}</div>
+                            {% endif %}
+                            <small class="text-muted">Por defecto: 15 días desde hoy</small>
+                        </div>
+                    </div>
+
+                    <!-- Notas -->
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <h5 class="border-bottom pb-2 mb-3">
+                                <i class="bi bi-card-text text-primary"></i> Notas Adicionales
+                            </h5>
+                        </div>
+                        
+                        <div class="col-md-12 mb-3">
+                            <label for="{{ form.notas_prestamo.id_for_label }}" class="form-label">
+                                {{ form.notas_prestamo.label }}
+                            </label>
+                            {{ form.notas_prestamo }}
+                            {% if form.notas_prestamo.errors %}
+                                <div class="text-danger small mt-1">{{ form.notas_prestamo.errors }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Botones -->
+                    <div class="row">
+                        <div class="col-12">
+                            <hr class="mb-4">
+                            <div class="d-flex justify-content-between">
+                                <a href="{% url 'lista_prestamos' %}" class="btn btn-secondary">
+                                    <i class="bi bi-x-circle"></i> Cancelar
+                                </a>
+                                <button type="submit" class="btn btn-success">
+                                    <i class="bi bi-save"></i> Registrar Préstamo
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Auto-calcular fecha de vencimiento (15 días desde hoy)
+    document.addEventListener('DOMContentLoaded', function() {
+        const fechaVencimiento = document.querySelector('#id_fecha_vencimiento');
+        if (fechaVencimiento && !fechaVencimiento.value) {
+            const hoy = new Date();
+            hoy.setDate(hoy.getDate() + 15);
+            const año = hoy.getFullYear();
+            const mes = String(hoy.getMonth() + 1).padStart(2, '0');
+            const dia = String(hoy.getDate()).padStart(2, '0');
+            fechaVencimiento.value = `${año}-${mes}-${dia}`;
+        }
+    });
+</script>
+{% endblock %}

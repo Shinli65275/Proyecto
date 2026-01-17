@@ -1,0 +1,232 @@
+{% extends 'app1/base.html' %}
+
+{% block title %}Dashboard - Biblioteca Cecytem{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <h2><i class="bi bi-speedometer2"></i> Dashboard - Sistema de Biblioteca</h2>
+        <p class="text-muted">Panel de control y estadísticas generales</p>
+    </div>
+</div>
+
+<!-- Estadísticas principales -->
+<div class="row mb-4">
+    <div class="col-md-3 mb-3">
+        <div class="card stat-card" style="background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%);">
+            <div class="card-body position-relative">
+                <i class="bi bi-book position-absolute" style="font-size: 3rem; opacity: 0.2; right: 20px; top: 20px;"></i>
+                <h6 class="text-white-50 mb-2">TOTAL DE LIBROS</h6>
+                <h2 class="mb-0 text-white fw-bold">{{ total_libros }}</h2>
+                <small class="text-white-50">En el catálogo</small>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3 mb-3">
+        <div class="card stat-card" style="background: linear-gradient(135deg, #198754 0%, #146c43 100%);">
+            <div class="card-body position-relative">
+                <i class="bi bi-check-circle position-absolute" style="font-size: 3rem; opacity: 0.2; right: 20px; top: 20px;"></i>
+                <h6 class="text-white-50 mb-2">DISPONIBLES</h6>
+                <h2 class="mb-0 text-white fw-bold">{{ libros_disponibles }}</h2>
+                <small class="text-white-50">Para préstamo</small>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3 mb-3">
+        <div class="card stat-card" style="background: linear-gradient(135deg, #ffc107 0%, #e0a800 100%);">
+            <div class="card-body position-relative">
+                <i class="bi bi-hourglass-split position-absolute" style="font-size: 3rem; opacity: 0.2; right: 20px; top: 20px;"></i>
+                <h6 class="text-white-50 mb-2">PRÉSTAMOS ACTIVOS</h6>
+                <h2 class="mb-0 text-white fw-bold">{{ prestamos_activos }}</h2>
+                <small class="text-white-50">En circulación</small>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- Accesos rápidos -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card shadow-sm">
+            <div class="card-header bg-white">
+                <h5 class="mb-0"><i class="bi bi-lightning"></i> Accesos Rápidos</h5>
+            </div>
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-md-3">
+                        <a href="{% url 'crear_libro' %}" class="btn btn-outline-primary w-100 py-3">
+                            <i class="bi bi-plus-circle d-block mb-2" style="font-size: 2rem;"></i>
+                            <strong>Agregar Libro</strong>
+                        </a>
+                    </div>
+                    <div class="col-md-3">
+                        <a href="{% url 'crear_prestamo' %}" class="btn btn-outline-success w-100 py-3">
+                            <i class="bi bi-arrow-right-circle d-block mb-2" style="font-size: 2rem;"></i>
+                            <strong>Nuevo Préstamo</strong>
+                        </a>
+                    </div>
+                    <div class="col-md-3">
+                        <a href="{% url 'lista_libros' %}" class="btn btn-outline-info w-100 py-3">
+                            <i class="bi bi-search d-block mb-2" style="font-size: 2rem;"></i>
+                            <strong>Buscar Libros</strong>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <!-- Préstamos por vencer -->
+    <div class="col-lg-6 mb-4">
+        <div class="card shadow-sm h-100">
+            <div class="card-header bg-white">
+                <h5 class="mb-0">
+                    <i class="bi bi-clock-history text-warning"></i> Préstamos por Vencer
+                </h5>
+                <small class="text-muted">Próximos 3 días</small>
+            </div>
+            <div class="card-body">
+                {% if prestamos_por_vencer %}
+                    <div class="list-group list-group-flush">
+                        {% for prestamo in prestamos_por_vencer %}
+                        <div class="list-group-item px-0">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div class="flex-grow-1">
+                                    <h6 class="mb-1">{{ prestamo.libro.titulo }}</h6>
+                                    <small class="text-muted">
+                                        <i class="bi bi-person"></i> {{ prestamo.alumno_nombre }}
+                                    </small>
+                                    <br>
+                                    <small class="text-muted">
+                                        <i class="bi bi-calendar"></i> Vence: {{ prestamo.fecha_vencimiento|date:"d/m/Y" }}
+                                    </small>
+                                </div>
+                                <span class="badge bg-warning text-dark">
+                                    {% widthratio prestamo.fecha_vencimiento|timeuntil:"" 1 1 %} día(s)
+                                </span>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="text-center py-4">
+                        <i class="bi bi-check-circle text-success" style="font-size: 3rem;"></i>
+                        <p class="text-muted mt-2 mb-0">No hay préstamos próximos a vencer</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Últimos movimientos -->
+    <div class="col-lg-6 mb-4">
+        <div class="card shadow-sm h-100">
+            <div class="card-header bg-white">
+                <h5 class="mb-0">
+                    <i class="bi bi-clock-history text-primary"></i> Últimos Movimientos
+                </h5>
+                <small class="text-muted">Actividad reciente</small>
+            </div>
+            <div class="card-body">
+                {% if ultimos_movimientos %}
+                    <div class="list-group list-group-flush">
+                        {% for movimiento in ultimos_movimientos %}
+                        <div class="list-group-item px-0">
+                            <div class="d-flex align-items-start">
+                                <div class="me-3">
+                                    {% if movimiento.tipo == 'prestamo' %}
+                                        <i class="bi bi-arrow-right-circle text-primary" style="font-size: 1.5rem;"></i>
+                                    {% elif movimiento.tipo == 'devolucion' %}
+                                        <i class="bi bi-arrow-left-circle text-success" style="font-size: 1.5rem;"></i>
+                                    {% elif movimiento.tipo == 'alta' %}
+                                        <i class="bi bi-plus-circle text-info" style="font-size: 1.5rem;"></i>
+                                    {% elif movimiento.tipo == 'baja' %}
+                                        <i class="bi bi-x-circle text-danger" style="font-size: 1.5rem;"></i>
+                                    {% else %}
+                                        <i class="bi bi-circle text-secondary" style="font-size: 1.5rem;"></i>
+                                    {% endif %}
+                                </div>
+                                <div class="flex-grow-1">
+                                    <small class="text-muted d-block">{{ movimiento.fecha|date:"d/m/Y H:i" }}</small>
+                                    <strong>{{ movimiento.get_tipo_display }}</strong>
+                                    <p class="mb-0 small text-muted">{{ movimiento.descripcion|truncatewords:10 }}</p>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="text-center py-4">
+                        <i class="bi bi-inbox text-muted" style="font-size: 3rem;"></i>
+                        <p class="text-muted mt-2 mb-0">No hay movimientos registrados</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Gráfico de distribución por categoría -->
+<div class="row">
+    <div class="col-12">
+        <div class="card shadow-sm">
+            <div class="card-header bg-white">
+                <h5 class="mb-0">
+                    <i class="bi bi-pie-chart text-info"></i> Distribución de Libros por Categoría
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row text-center">
+                    <div class="col-md-2 mb-3">
+                        <div class="border rounded p-3 hover-shadow" style="transition: all 0.3s;">
+                            <i class="bi bi-book text-primary" style="font-size: 2rem;"></i>
+                            <h5 class="mt-2 mb-0">{{ categorias_dict.ficcion|default:0 }}</h5>
+                            <small class="text-muted">Ficción</small>
+                        </div>
+                    </div>
+                    <div class="col-md-2 mb-3">
+                        <div class="border rounded p-3 hover-shadow" style="transition: all 0.3s;">
+                            <i class="bi bi-journal text-success" style="font-size: 2rem;"></i>
+                            <h5 class="mt-2 mb-0">{{ categorias_dict.no_ficcion|default:0 }}</h5>
+                            <small class="text-muted">No Ficción</small>
+                        </div>
+                    </div>
+                    <div class="col-md-2 mb-3">
+                        <div class="border rounded p-3 hover-shadow" style="transition: all 0.3s;">
+                            <i class="bi bi-lightning text-warning" style="font-size: 2rem;"></i>
+                            <h5 class="mt-2 mb-0">{{ categorias_dict.ciencia|default:0 }}</h5>
+                            <small class="text-muted">Ciencia</small>
+                        </div>
+                    </div>
+                    <div class="col-md-2 mb-3">
+                        <div class="border rounded p-3 hover-shadow" style="transition: all 0.3s;">
+                            <i class="bi bi-cpu text-info" style="font-size: 2rem;"></i>
+                            <h5 class="mt-2 mb-0">{{ categorias_dict.tecnologia|default:0 }}</h5>
+                            <small class="text-muted">Tecnología</small>
+                        </div>
+                    </div>
+                    <div class="col-md-2 mb-3">
+                        <div class="border rounded p-3 hover-shadow" style="transition: all 0.3s;">
+                            <i class="bi bi-clock-history text-danger" style="font-size: 2rem;"></i>
+                            <h5 class="mt-2 mb-0">{{ categorias_dict.historia|default:0 }}</h5>
+                            <small class="text-muted">Historia</small>
+                        </div>
+                    </div>
+                    <div class="col-md-2 mb-3">
+                        <div class="border rounded p-3 hover-shadow" style="transition: all 0.3s;">
+                            <i class="bi bi-three-dots text-secondary" style="font-size: 2rem;"></i>
+                            <h5 class="mt-2 mb-0">{{ categorias_dict.otros|default:0 }}</h5>
+                            <small class="text-muted">Otros</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
